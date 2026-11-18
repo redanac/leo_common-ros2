@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <link name="rplidar_link">
+    <visual>
+      <origin xyz="0 0 0.0085"/>
+      <geometry>
+        <box size="0.080 0.087 0.017"/>
+      </geometry>
+      <material name="support">
+        <color rgba="0.5 0.5 0.5 1.0"/>
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0 0 0.034"/>
+      <geometry>
+        <cylinder radius="0.038" length="0.041"/>
+      </geometry>
+      <material name="lidar">
+        <color rgba="1.0 0.0 0.0 0.7"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.0085"/>
+      <geometry>
+        <box size="0.080 0.087 0.017"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 0 0.0483"/>
+      <geometry>
+        <cylinder radius="0.038" length="0.041"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="rplidar_joint" type="fixed">
+    <origin xyz="0.0775 0 0"/>
+    <parent link="base_link"/>
+    <child link="rplidar_link"/>
+  </joint>
+
+  <link name="laser_frame"/>
+
+  <joint name="laser_joint" type="fixed">
+    <origin xyz="0 0 0.034" rpy="0 0 ${-pi/2}"/>
+    <parent link="rplidar_link"/>
+    <child link="laser_frame"/>
+  </joint>
+
+  <gazebo reference="laser_frame">
+    <sensor name="laser" type="gpu_lidar">
+        <pose> 0 0 0 0 0 0 </pose>
+        <visualize>false</visualize>
+        <update_rate>10</update_rate>
+        <lidar>
+            <scan>
+              <horizontal>
+                  <samples>360</samples>
+                  <min_angle>-3.14</min_angle>
+                  <max_angle>3.14</max_angle>
+              </horizontal>
+            </scan>
+            <range>
+                <min>0.2</min>
+                <max>12</max>
+            </range>
+        </lidar>
+        <topic>scan</topic>
+        <gz_frame_id>laser_frame</gz_frame_id>
+    </sensor>
+</gazebo>
+
+</robot>
